@@ -20,3 +20,8 @@
 1. MacOS with different processor architectures sharing one Chrome software package
 
 2. ChromeDownloader only handles download requests from Windows users of x64 architecture processors to download Google Chrome offline installation package
+
+
+## portable
+
+https://github.com/Bush2021/chrome_plus
