@@ -13,3 +13,10 @@
 3. java ChromeDownloader (or java ChromeDownloaderMacOS)
 
 4. Select a version with an update frequency that suits you 💕💕
+
+## Written for users
+
+
+1. MacOS with different processor architectures sharing one Chrome software package
+
+2. ChromeDownloader only handles download requests from Windows users of x64 architecture processors to download Google Chrome offline installation package
