@@ -22,6 +22,6 @@
 2. ChromeDownloader only handles download requests from Windows users of x64 architecture processors to download Google Chrome offline installation package
 
 
-## portable
+## Portable  
 
-https://github.com/Bush2021/chrome_plus
+Chrome++ : https://github.com/Bush2021/chrome_plus
