@@ -1,4 +1,4 @@
-# ChromeDownloader
+# ChromeDownloader 2.0
 💕💕 Download tool for Google Chrome offline installation package for x64 architecture Windows or MacOS
 
 
