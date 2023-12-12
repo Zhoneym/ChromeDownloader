@@ -3,11 +3,6 @@ function Get-LatestChromiumVersion($platform) {
     return Invoke-RestMethod -Uri $url
 }
 
-function Get-LatestChromiumVersion($platform) {
-    $url = "https://storage.googleapis.com/chromium-browser-snapshots/" + $platform + "/LAST_CHANGE"
-    return Invoke-RestMethod -Uri $url
-}
-
 function Get-DownloadUrl($platform, $file) {
     $version = Get-LatestChromiumVersion $platform
     return "https://storage.googleapis.com/chromium-browser-snapshots/" + $platform + "/" + $version + "/" + $file
@@ -26,7 +21,13 @@ Write-Output "2. Linux_x64"
 Write-Output "3. MacOS"
 Write-Output "4. Android"
 
-$choice = Read-Host -Prompt 'Please enter your choice (1, 2, 3, 4)'
+do {
+    $choice = Read-Host -Prompt 'Please enter your choice (1, 2, 3, 4)'
+    if ($choice -notin @("1", "2", "3", "4")) {
+        Write-Output "Invalid input. Please enter a number between 1 and 4."
+    }
+} until ($choice -in @("1", "2", "3", "4"))
+
 $platform = $fetcher[$choice]["platform"]
 $file = $fetcher[$choice]["file"]
 $url = Get-DownloadUrl $platform $file
@@ -34,7 +35,7 @@ Write-Output ("The download link for the latest " + $platform + " Chromium versi
 
 $download = Read-Host -Prompt 'Do you want to download this file? (Yes/no)'
 if ($download -match "^(Y|y|Yes|yes|YES)$") {
-    $filename = $platform.ToLower() + "_latest_" + $file
+    $filename = $platform.ToLower() + $file
     Invoke-WebRequest -Uri $url -OutFile $filename
     Write-Output ("The file has been downloaded to the current folder. The filename is: " + $filename)
 }
