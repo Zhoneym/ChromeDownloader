@@ -32,89 +32,90 @@ public class ChromeDownloader
         System.out.println("3. Dev");
         System.out.println("4. Canary");
 	System.out.println("Please select a version with an update frequency that suits you:");
-        Scanner scanner = new Scanner(System.in);
-        String choice;
-        do {
-            choice = scanner.nextLine();
-            if(!choice.matches("^[1-4]$"))
-            {
-                System.out.println("Incorrect input, please enter again:");
-            }
-        } while (!choice.matches("^[1-4]$"));
-        String channel = fetcher.get(choice).get("channel");
-        String appid = fetcher.get(choice).get("appid");
-        System.out.println("appid: " + appid);
-        URI uri = new URI("https://tools.google.com/service/update2");
-        HttpURLConnection connection = (HttpURLConnection) uri.toURL().openConnection();
-        connection.setRequestMethod("POST");
-        connection.setRequestProperty("User-Agent", "Google Update/1.3.32.7;winhttp;cup-ecdsa");
-        connection.setRequestProperty("Host", "tools.google.com");
-        connection.setDoOutput(true);
-        String requestBody = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><request protocol=\"3.0\" version=\"1.3.23.9\" shell_version=\"1.3.21.103\" ismachine=\"0\" sessionid=\"" + sessionid + "\" installsource=\"ondemandcheckforupdate\" requestid=\"" + requestid + "\" dedup=\"cr\"><hw physmemory=\"1200000\" sse=\"1\" sse2=\"1\" sse3=\"1\" ssse3=\"1\" sse41=\"1\" sse42=\"1\" avx=\"1\"/><os platform=\"win\" version=\"10.0\" arch=\"x64\"/><app appid=\"" + appid + "\" version=\"\" nextversion=\"\" ap=\"" + channel + "\" lang=\"zh-CN\"><updatecheck/></app></request>";
-        byte[] byteArray = requestBody.getBytes("UTF-8");
-        connection.getOutputStream().write(byteArray);
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder builder = factory.newDocumentBuilder();
-        Document doc = builder.parse(connection.getInputStream());
-        NodeList urlNodes = doc.getElementsByTagName("url");
-        List < String > downloadLinks = new ArrayList < > ();
-        for(int i = 0; i < urlNodes.getLength(); i++)
-        {
-            Element urlElement = (Element) urlNodes.item(i);
-            String codebase = urlElement.getAttribute("codebase");
-            NodeList packageNodes = doc.getElementsByTagName("package");
-            for(int j = 0; j < packageNodes.getLength(); j++)
-            {
-                Element packageElement = (Element) packageNodes.item(j);
-                String name = packageElement.getAttribute("name");
-                downloadLinks.add(codebase + name);
-            }
-        }
-        System.out.println("Download links:");
-        for(int i = 0; i < downloadLinks.size(); i++)
-        {
-            System.out.println((i + 1) + ". " + downloadLinks.get(i));
-        }
-        System.out.println();
-        System.out.println("Do you want to download? (yes/y to download, no/n to not download)");
-        String downloadChoice;
-        do {
-            downloadChoice = scanner.nextLine();
-            if(!downloadChoice.matches("^(yes|y|no|n)$"))
-            {
-                System.out.println("Incorrect input, please enter again:");
-            }
-        } while (!downloadChoice.matches("^(yes|y|no|n)$"));
-        if(downloadChoice.equalsIgnoreCase("yes") || downloadChoice.equalsIgnoreCase("y"))
-        {
-            System.out.println("Please enter the number of the link you want to download:");
-            int linkNumber = -1;
+        try (Scanner scanner = new Scanner(System.in)) {
+            String choice;
             do {
-                String numberChoice = scanner.nextLine();
-                try
+                choice = scanner.nextLine();
+                if(!choice.matches("^[1-4]$"))
                 {
-                    linkNumber = Integer.parseInt(numberChoice);
-                    if(linkNumber < 1 || linkNumber > downloadLinks.size())
+                    System.out.println("Incorrect input, please enter again:");
+                }
+            } while (!choice.matches("^[1-4]$"));
+            String channel = fetcher.get(choice).get("channel");
+            String appid = fetcher.get(choice).get("appid");
+            System.out.println("appid: " + appid);
+            URI uri = new URI("https://tools.google.com/service/update2");
+            HttpURLConnection connection = (HttpURLConnection) uri.toURL().openConnection();
+            connection.setRequestMethod("POST");
+            connection.setRequestProperty("User-Agent", "Google Update/1.3.32.7;winhttp;cup-ecdsa");
+            connection.setRequestProperty("Host", "tools.google.com");
+            connection.setDoOutput(true);
+            String requestBody = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><request protocol=\"3.0\" version=\"1.3.23.9\" shell_version=\"1.3.21.103\" ismachine=\"0\" sessionid=\"" + sessionid + "\" installsource=\"ondemandcheckforupdate\" requestid=\"" + requestid + "\" dedup=\"cr\"><hw physmemory=\"1200000\" sse=\"1\" sse2=\"1\" sse3=\"1\" ssse3=\"1\" sse41=\"1\" sse42=\"1\" avx=\"1\"/><os platform=\"win\" version=\"10.0\" arch=\"x64\"/><app appid=\"" + appid + "\" version=\"\" nextversion=\"\" ap=\"" + channel + "\" lang=\"zh-CN\"><updatecheck/></app></request>";
+            byte[] byteArray = requestBody.getBytes("UTF-8");
+            connection.getOutputStream().write(byteArray);
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            Document doc = builder.parse(connection.getInputStream());
+            NodeList urlNodes = doc.getElementsByTagName("url");
+            List < String > downloadLinks = new ArrayList < > ();
+            for(int i = 0; i < urlNodes.getLength(); i++)
+            {
+                Element urlElement = (Element) urlNodes.item(i);
+                String codebase = urlElement.getAttribute("codebase");
+                NodeList packageNodes = doc.getElementsByTagName("package");
+                for(int j = 0; j < packageNodes.getLength(); j++)
+                {
+                    Element packageElement = (Element) packageNodes.item(j);
+                    String name = packageElement.getAttribute("name");
+                    downloadLinks.add(codebase + name);
+                }
+            }
+            System.out.println("Download links:");
+            for(int i = 0; i < downloadLinks.size(); i++)
+            {
+                System.out.println((i + 1) + ". " + downloadLinks.get(i));
+            }
+            System.out.println();
+            System.out.println("Do you want to download? (yes/y to download, no/n to not download)");
+            String downloadChoice;
+            do {
+                downloadChoice = scanner.nextLine();
+                if(!downloadChoice.matches("^(yes|y|no|n)$"))
+                {
+                    System.out.println("Incorrect input, please enter again:");
+                }
+            } while (!downloadChoice.matches("^(yes|y|no|n)$"));
+            if(downloadChoice.equalsIgnoreCase("yes") || downloadChoice.equalsIgnoreCase("y"))
+            {
+                System.out.println("Please enter the number of the link you want to download:");
+                int linkNumber = -1;
+                do {
+                    String numberChoice = scanner.nextLine();
+                    try
+                    {
+                        linkNumber = Integer.parseInt(numberChoice);
+                        if(linkNumber < 1 || linkNumber > downloadLinks.size())
+                        {
+                            System.out.println("Incorrect input, please enter again:");
+                            continue;
+                        }
+                    }
+                    catch(NumberFormatException e)
                     {
                         System.out.println("Incorrect input, please enter again:");
                         continue;
                     }
-                }
-                catch(NumberFormatException e)
+                } while (linkNumber < 1 || linkNumber > downloadLinks.size());
+                String downloadLink = downloadLinks.get(linkNumber - 1);
+                String fileName = downloadLink.substring(downloadLink.lastIndexOf('/') + 1);
+                try
                 {
-                    System.out.println("Incorrect input, please enter again:");
-                    continue;
+                    downloadFile(downloadLink, fileName);
                 }
-            } while (linkNumber < 1 || linkNumber > downloadLinks.size());
-            String downloadLink = downloadLinks.get(linkNumber - 1);
-            String fileName = downloadLink.substring(downloadLink.lastIndexOf('/') + 1);
-            try
-            {
-                downloadFile(downloadLink, fileName);
-            }
-            catch(URISyntaxException e)
-            {
-                System.out.println("Invalid URL: " + downloadLink);
+                catch(URISyntaxException e)
+                {
+                    System.out.println("Invalid URL: " + downloadLink);
+                }
             }
         }
     }
